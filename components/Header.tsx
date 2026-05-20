@@ -1,0 +1,34 @@
+import React from "react";
+import Container from "./Container";
+import Logo from "./Logo";
+import HeaderMenu from "./HeaderMenu";
+import SearchBar from "./SearchBar";
+import CartIcon from "./CartIcon";
+import FavoriteButton from "./FavoriteButton";
+import SignIn from "./SignIn";
+import MobileMenu from "./MobileMenu";
+
+const Header = () => {
+  return (
+    <header className="bg-white py-5 border-b border-b-black/20">
+      <Container classname="flex items-center justify-between text-light-color">
+        {/* Logo */}
+        <div className="w-auto md:w-1/3 flex items-center gap-3 justify-start md:gap-0 ">
+          <MobileMenu />
+          <Logo />
+        </div>
+        {/* Navbutton */}
+        <HeaderMenu />
+        {/* User Profile */}
+        <div className="w-auto md:w-1/3 flex items-center justify-end gap-5">
+          <SearchBar />
+          <CartIcon />
+          <FavoriteButton />
+          <SignIn />
+        </div>
+      </Container>
+    </header>
+  );
+};
+
+export default Header;
