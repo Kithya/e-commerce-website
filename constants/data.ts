@@ -29,32 +29,26 @@ export const headerData = [
   },
 ];
 
-export type SocialLink = {
-  title: string;
-  href: string;
-  icon: LucideIcon;
-};
-
-export const socialLink: SocialLink[] = [
-  {
-    title: "Instagram",
-    href: "https://www.instagram.com",
-    icon: Camera,
-  },
-  {
-    title: "Facebook",
-    href: "https://www.facebook.com",
-    icon: MessageCircle,
-  },
-  {
-    title: "X",
-    href: "https://x.com",
-    icon: Send,
-  },
-  {
-    title: "YouTube",
-    href: "https://www.youtube.com",
-    icon: Video,
-  },
+export const quickLinksData = [
+  { title: "About us", href: "/about" },
+  { title: "Contact us", href: "/contact" },
+  { title: "Terms & Conditions", href: "/terms" },
+  { title: "Privacy Policy", href: "/privacy" },
+  { title: "FAQs", href: "/faqs" },
+  { title: "Help", href: "/help" },
 ];
-
+export const categoriesData = [
+  { title: "Mobiles", href: "mobiles" },
+  { title: "Appliances", href: "appliances" },
+  { title: "Smartphones", href: "smartphones" },
+  { title: "Air Conditioners", href: "air-conditioners" },
+  { title: "Washing Machine", href: "washing-machine" },
+  { title: "Kitchen Appliances", href: "kitchen-appliances" },
+  { title: "gadget accessories", href: "gadget-accessories" },
+];
+export const productType = [
+  { title: "Gadget", value: "gadget" },
+  { title: "Appliances", value: "appliances" },
+  { title: "Refrigerators", value: "refrigerators" },
+  { title: "Others", value: "others" },
+];
