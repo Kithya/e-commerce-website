@@ -12,7 +12,7 @@ import { Button } from "./ui/button";
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t mt-40">
+    <footer className="bg-white border-t">
       <Container>
         <FooterTop />
 
