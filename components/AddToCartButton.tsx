@@ -14,7 +14,7 @@ const AddToCartButton = ({ product, className }: Props) => {
 
   const handleAddToCart = () => {};
   return (
-    <div>
+    <div className="w-full h-12 flex items-center">
       <Button
         onClick={handleAddToCart}
         disabled={isOutOfStock}
