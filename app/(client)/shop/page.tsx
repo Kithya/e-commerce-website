@@ -1,9 +1,15 @@
-import React from 'react'
+import Shop from "@/components/Shop";
+import { getAllBrands, getCategories } from "@/sanity/queries";
+import React from "react";
 
-const ShopPage = () => {
+const ShopPage = async () => {
+  const categories = await getCategories();
+  const brands = await getAllBrands();
   return (
-    <div>ShopPage</div>
-  )
-}
+    <div>
+      <Shop categories={categories} brands={brands} />
+    </div>
+  );
+};
 
-export default ShopPage
+export default ShopPage;
