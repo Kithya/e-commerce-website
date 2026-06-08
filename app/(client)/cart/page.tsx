@@ -4,7 +4,7 @@ import EmptyCart from "@/components/EmptyCart";
 import NoAccess from "@/components/NoAccess";
 import { Address } from "@/sanity.types";
 import useStore from "@/store";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
 import { ShoppingBag, Trash } from "lucide-react";
 import { Title } from "@/components/ui/text";
@@ -27,6 +27,7 @@ import { client } from "@/sanity/lib/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import createCheckoutSession from "@/actions/createCheckoutSession";
 
 const CartPage = () => {
   const {
@@ -39,6 +40,7 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
   const groupedItems = useStore((state) => state.getGroupedItems());
   const { isSignedIn } = useAuth();
+  const { user } = useUser();
   const [addresses, setAddresses] = useState<Address[] | null>(null);
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
@@ -79,6 +81,21 @@ const CartPage = () => {
   const handleCheckout = async () => {
     setLoading(true);
     try {
+      const metadata = {
+        orderNumber: crypto.randomUUID(),
+        customerName: user?.fullName || "Unknown",
+        customerEmail: user?.emailAddresses[0].emailAddress || "Unknown",
+        clerkUserId: user?.id,
+        address: selectedAddress,
+      };
+
+      const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
+
+      console.log("Checkout URL:", checkoutUrl);
+
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      }
     } catch (error) {
       console.error("Error creating checkout session:", error);
     } finally {
@@ -293,6 +310,33 @@ const CartPage = () => {
                     <h2 className="text-xl font-semibold mb-4">
                       Order Summary
                     </h2>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span>SubTotal</span>
+                        <PriceFormatter amount={getSubTotalPrice()} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Discount</span>
+                        <PriceFormatter
+                          amount={getSubTotalPrice() - getTotalPrice()}
+                        />
+                      </div>
+                      <Separator />
+                      <div className="flex items-center justify-between font-semibold text-lg">
+                        <span>Total</span>
+                        <PriceFormatter amount={getTotalPrice()} />
+                      </div>
+                      <Button
+                        className={
+                          "w-full rounded-full font-medium tracking-wide hoverEffect bg-green-800"
+                        }
+                        onClick={handleCheckout}
+                        disabled={loading}
+                        size={"lg"}
+                      >
+                        {loading ? "Please wait..." : "Proceed to Checkout"}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
