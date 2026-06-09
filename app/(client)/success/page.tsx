@@ -1,16 +1,18 @@
 "use client";
+import { syncCheckoutSessionOrder } from "@/actions/syncCheckoutSessionOrder";
 import useStore from "@/store";
-import { useUser } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
-import React, { use, useEffect } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { motion } from "motion/react";
 import { Check, Home, Package, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 const SuccessPage = () => {
-//   const { user } = useUser();
   const { resetCart } = useStore();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const sessionId = searchParams.get("session_id");
   const orderNumber = searchParams.get("orderNumber");
 
   useEffect(() => {
@@ -18,6 +20,22 @@ const SuccessPage = () => {
       resetCart();
     }
   }, [orderNumber, resetCart]);
+
+  useEffect(() => {
+    if (!sessionId) {
+      return;
+    }
+
+    startTransition(async () => {
+      try {
+        await syncCheckoutSessionOrder(sessionId);
+        setSyncError(null);
+      } catch (error) {
+        console.error("Error syncing checkout session:", error);
+        setSyncError("We could not sync this order yet. Please refresh in a moment.");
+      }
+    });
+  }, [sessionId]);
 
   return (
     <div className="py-5 bg-linear-to-br from-gray-50 to-gray-100 flex items-center justify-center mx-4">
@@ -49,6 +67,12 @@ const SuccessPage = () => {
             Order Number:{" "}
             <span className="text-black font-semibold">{orderNumber}</span>
           </p>
+          {isPending && (
+            <p className="text-sm font-medium text-shop_dark_green">
+              Finalizing your order...
+            </p>
+          )}
+          {syncError && <p className="text-sm font-medium text-red-600">{syncError}</p>}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Link
